@@ -1,0 +1,35 @@
+[project]
+name = "rewrite-path-dependencies"
+version = "1.0.0.dev"
+description = "A uv tool for facilitating the usage of more complex monorepo project structures by pinning version dependencies when building archives with local path dependencies to other uv projects within the same monorepo."
+readme = "README.md"
+authors = [
+    { name = "Margaret Black", email = "black_margaret@bah.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.1.8",
+    "toml>=0.10.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+rewrite-path-dependencies = "rewrite_path_dependencies.cli:cli"
+
+# Added by habushu-maven-plugin at 2025-03-11T09:17:59.022658 to use https://pypi.org/simple/ as source PyPi repository for installing dependencies
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple/"
+
+[tool.ruff.format]
+indent-style="space"
+line-ending="lf"
+quote-style="preserve"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.10",
+]
