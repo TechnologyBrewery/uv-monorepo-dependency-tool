@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>uv Monorepo Dependency Plugin</name>
+    <description>
+        A uv tool for facilitating the usage of more complex monorepo project structures by pinning version dependencies
+        when building archives with local path dependencies to other uv projects within the same
+        monorepo</description>
+    <groupId>org.technologybrewery</groupId>
+    <artifactId>uv-monorepo-dependency-tool</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <url>https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool</url>
+    <inceptionYear>2025</inceptionYear>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Margaret Black</name>
+            <email>black_margaret@bah.com</email>
+            <organization>Technology Brewery</organization>
+            <organizationUrl>https://github.com/TechnologyBrewery</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/TechnologyBrewery/uv-monorepo-dependency-tool.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/TechnologyBrewery/uv-monorepo-dependency-tool.git
+        </developerConnection>
+        <url>https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <version.habushu.plugin>3.0.0-SNAPSHOT</version.habushu.plugin>
+        <version.python.default>3.12.9</version.python.default>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.technologybrewery.habushu</groupId>
+                <artifactId>habushu-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- During release preparation, Habushu will automatically update the versions of Habushu modules
+                        within their pyproject.toml configurations, however the maven-release-plugin will only commit
+                        updates to pom.xml files.  In order to version control both pom.xml and pyproject.toml files
+                        that are updated during release preparation, customize the preparation and completion goals
+                        to additionally execute the scm:checkin goals -->
+                    <preparationGoals>clean verify scm:checkin -Dmessage="[maven-release-plugin] prepare release"
+                    </preparationGoals>
+                    <completionGoals>clean verify scm:checkin -Dmessage="[maven-release-plugin] prepare for next
+                        development iteration"
+                    </completionGoals>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.technologybrewery.habushu</groupId>
+                    <artifactId>habushu-maven-plugin</artifactId>
+                    <version>${version.habushu.plugin}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <pythonVersion>${version.python.default}</pythonVersion>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>rewrite-path-dependencies</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>ossrh-release</id>
+            <modules>
+                <module>rewrite-path-dependencies</module>
+            </modules>
+        </profile>
+    </profiles>
+
+</project>
