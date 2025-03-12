@@ -1,0 +1,35 @@
+[project]
+name = "project-a-consumer"
+version = "1.0.0.dev"
+description = "A simple uv project that had an editable dependency on project-a"
+readme = "README.md"
+authors = [
+    { name = "Margaret Black", email = "black_margaret@bah.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "project-a",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+project-a = { path = "../project-a", editable = true }
+
+
+# Added by habushu-maven-plugin at 2025-03-11T13:23:38.710098 to use https://pypi.org/simple/ as source PyPi repository for installing dependencies
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple/"
+
+[tool.ruff.format]
+indent-style="space"
+line-ending="lf"
+quote-style="preserve"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.10",
+]

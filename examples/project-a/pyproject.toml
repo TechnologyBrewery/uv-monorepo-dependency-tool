@@ -1,0 +1,29 @@
+[project]
+name = "project-a"
+version = "1.0.0.dev"
+description = "A simple uv project"
+readme = "README.md"
+authors = [
+    { name = "Margaret Black", email = "black_margaret@bah.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Added by habushu-maven-plugin at 2025-03-11T13:23:31.365618 to use https://pypi.org/simple/ as source PyPi repository for installing dependencies
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple/"
+
+[tool.ruff.format]
+indent-style="space"
+line-ending="lf"
+quote-style="preserve"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.10",
+]
