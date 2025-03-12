@@ -7,6 +7,9 @@ wheels/
 *.egg-info
 .DS_Store
 
+# uv-generated files
+.python-version
+
 # Virtual environments
 .venv
 

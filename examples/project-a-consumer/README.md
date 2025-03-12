@@ -3,14 +3,7 @@
 # project-a-consumer
 This is a simple project that installs `project-a` as an editable dependency.
 
-## Installation
-
-TODO: update to published package
+To use the `uv-monorepo-dependency-tool` within this project directory, run 
 ```bash
-uv tool install ../../uv-build-tool/dist/uv_build_tool-1.0.0.dev0-py3-none-any.whl
-```
-## Usage
-Within the desired project/package directory, run 
-```
-uv tool run rewrite-path-dependencies build
+uv tool run uv-monorepo-dependency-tool build-rewrite-path-deps  
 ```

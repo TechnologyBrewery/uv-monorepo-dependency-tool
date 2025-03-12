@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>org.technologybrewery</groupId>
-        <artifactId>uv-monorepo-dependency-tool</artifactId>
+        <artifactId>uv-monorepo-dependency-tool-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>uv Monorepo Dependency Tool::Rewrite Path Dependencies</name>
-    <artifactId>rewrite-path-dependencies</artifactId>
+    <name>uv Monorepo Dependency Tool::CLI Library</name>
+    <artifactId>uv-monorepo-dependency-tool</artifactId>
     <packaging>habushu</packaging>
 
     <dependencyManagement>

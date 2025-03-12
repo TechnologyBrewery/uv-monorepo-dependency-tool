@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.technologybrewery</groupId>
         <artifactId>parent</artifactId>
-        <version>11</version>
+        <version>12</version>
     </parent>
 
     <name>uv Monorepo Dependency Tool</name>
@@ -14,7 +14,7 @@
         when building archives with local path dependencies to other uv projects within the same
         monorepo</description>
     <groupId>org.technologybrewery</groupId>
-    <artifactId>uv-monorepo-dependency-tool</artifactId>
+    <artifactId>uv-monorepo-dependency-tool-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -48,9 +48,12 @@
 
     <properties>
         <version.habushu.plugin>3.0.0-SNAPSHOT</version.habushu.plugin>
-        <!-- Fixing since the parent pom is still using 3.11.9 -->
-        <version.python.default>3.12.9</version.python.default>
     </properties>
+
+    <modules>
+        <module>uv-monorepo-dependency-tool</module>
+        <module>examples</module>
+    </modules>
 
     <build>
         <plugins>
@@ -77,19 +80,9 @@
 
     <profiles>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>rewrite-path-dependencies</module>
-                <module>examples</module>
-            </modules>
-        </profile>
-        <profile>
             <id>ossrh-release</id>
             <modules>
-                <module>rewrite-path-dependencies</module>
+                <module>uv-monorepo-dependency-tool</module>
             </modules>
         </profile>
     </profiles>
