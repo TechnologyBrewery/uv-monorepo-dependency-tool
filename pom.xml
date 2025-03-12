@@ -8,7 +8,7 @@
         <version>11</version>
     </parent>
 
-    <name>uv Monorepo Dependency Plugin</name>
+    <name>uv Monorepo Dependency Tool</name>
     <description>
         A uv tool for facilitating the usage of more complex monorepo project structures by pinning version dependencies
         when building archives with local path dependencies to other uv projects within the same
@@ -83,6 +83,7 @@
             </activation>
             <modules>
                 <module>rewrite-path-dependencies</module>
+                <module>examples</module>
             </modules>
         </profile>
         <profile>
