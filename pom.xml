@@ -57,6 +57,28 @@
             <plugin>
                 <groupId>org.technologybrewery.habushu</groupId>
                 <artifactId>habushu-maven-plugin</artifactId>
+                <configuration>
+                    <useDevRepository>true</useDevRepository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- During release preparation, Habushu will automatically update the versions of Habushu modules
+                        within their pyproject.toml configurations, however the maven-release-plugin will only commit
+                        updates to pom.xml files.  In order to version control both pom.xml and pyproject.toml files
+                        that are updated during release preparation, customize the preparation and completion goals
+                        to additionally execute the scm:checkin goals -->
+                    <preparationGoals>clean verify scm:checkin -Dmessage="[maven-release-plugin] prepare release"
+                    </preparationGoals>
+                    <completionGoals>clean verify scm:checkin -Dmessage="[maven-release-plugin] prepare for next
+                        development iteration"
+                    </completionGoals>
+                    <goals>deploy</goals>
+                </configuration>
             </plugin>
         </plugins>
 
