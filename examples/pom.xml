@@ -4,13 +4,18 @@
 
     <parent>
         <groupId>org.technologybrewery</groupId>
-        <artifactId>uv-monorepo-dependency-tool</artifactId>
+        <artifactId>uv-monorepo-dependency-tool-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <name>uv Monorepo Dependency Tool::Examples</name>
     <artifactId>examples</artifactId>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>project-a</module>
+        <module>project-a-consumer</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -20,15 +25,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>examples</id>
-            <modules>
-                <module>project-a</module>
-                <module>project-a-consumer</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>

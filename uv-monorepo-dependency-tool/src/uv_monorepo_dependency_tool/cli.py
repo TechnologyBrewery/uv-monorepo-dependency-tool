@@ -75,13 +75,12 @@ def create_temporary_build_env(package_root):
 
 
 @click.command()
-def build():
+def build_rewrite_path_deps():
     """Creates a temporary environment with pinned dependency versions and builds the package."""
     package_root = find_package_root()
 
     package_root_temp = create_temporary_build_env(package_root)
 
-    # if build:
     click.echo("Building package...")
     subprocess.run(["uv", "build"], cwd=package_root_temp, check=True)
 
@@ -101,7 +100,7 @@ def cli():
     pass
 
 
-cli.add_command(build)
+cli.add_command(build_rewrite_path_deps)
 
 if __name__ == "__main__":
     cli()
