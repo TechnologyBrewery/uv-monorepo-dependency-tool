@@ -1,3 +1,4 @@
+# %%
 import subprocess
 import tempfile
 import shutil
@@ -6,21 +7,54 @@ import click
 import toml
 
 
-def find_package_root():
+def get_pyproject_path():
     current_working_directory = Path.cwd()
     pyproject_toml_filepath = current_working_directory / "pyproject.toml"
 
     if pyproject_toml_filepath.exists():
-        return current_working_directory
+        return pyproject_toml_filepath
     else:
-        raise RuntimeError("Package root not found.")
+        raise RuntimeError("pyproject.toml path not found.")
 
 
-def get_version_from_pyproject(pyproject_path):
-    """Extracts version from a given pyproject.toml file."""
+def load_pyproject_toml(pyproject_path):
+    """Loads a pyproject.toml file."""
     with pyproject_path.open("r", encoding="utf-8") as f:
-        data = toml.load(f)
-        return data["project"]["version"]
+        return toml.load(f)
+
+
+def write_pyproject_toml(pyproject_path, data):
+    """Writes a pyproject.toml file."""
+    with pyproject_path.open("w", encoding="utf-8") as f:
+        toml.dump(data, f)
+
+
+def get_project_version(pyproject_path):
+    """Extracts version from a given pyproject.toml file."""
+    data = load_pyproject_toml(pyproject_path)
+    return data["project"]["version"]
+
+
+def get_editable_dependencies(data):
+    try:
+        return data["tool"]["uv"]["sources"]
+    except KeyError:
+        return None
+
+
+def get_dependencies(data):
+    try:
+        return data["project"]["dependencies"]
+    except KeyError:
+        return None
+
+
+def remove_empty_editable_dependency_table(data, editable_dependencies_to_delete):
+    for dep in editable_dependencies_to_delete:
+        del data["tool"]["uv"]["sources"][dep]
+
+    if not data["tool"]["uv"]["sources"]:
+        del data["tool"]["uv"]["sources"]
 
 
 def create_temporary_build_env(package_root):
@@ -37,12 +71,11 @@ def create_temporary_build_env(package_root):
     )
 
     # Read dependencies from the original pyproject.toml
-    pyproject_path = package_root_temp / "pyproject.toml"
-    with pyproject_path.open("r", encoding="utf-8") as f:
-        data = toml.load(f)
+    temp_pyproject_path = package_root_temp / "pyproject.toml"
+    data = load_pyproject_toml(temp_pyproject_path)
 
-    editable_dependencies = data["tool"]["uv"]["sources"]
-    dependencies = data["project"]["dependencies"]
+    editable_dependencies = get_editable_dependencies(data)
+    dependencies = get_dependencies(data)
     editable_dependencies_to_delete = []
 
     for dep_name, dep_value in editable_dependencies.items():
@@ -53,7 +86,7 @@ def create_temporary_build_env(package_root):
                 dep_pyproject = dep_path / "pyproject.toml"
 
                 if dep_pyproject.exists():
-                    fixed_version = get_version_from_pyproject(dep_pyproject)
+                    fixed_version = get_project_version(dep_pyproject)
                     dep_name_index = dependencies.index(dep_name)
                     dependencies[dep_name_index] = f"{dep_name}=={fixed_version}"
                     click.echo(
@@ -61,42 +94,47 @@ def create_temporary_build_env(package_root):
                     )
 
     if editable_dependencies_to_delete:
-        for dep in editable_dependencies_to_delete:
-            del data["tool"]["uv"]["sources"][dep]
-
-    if not data["tool"]["uv"]["sources"]:
-        del data["tool"]["uv"]["sources"]
+        remove_empty_editable_dependency_table(data, editable_dependencies_to_delete)
 
     # Write the modified pyproject.toml to the temporary directory
-    with pyproject_path.open("w", encoding="utf-8") as f:
-        toml.dump(data, f)
+    write_pyproject_toml(temp_pyproject_path, data)
 
     return package_root_temp
 
 
+def hasEditableDependency(pyproject_path):
+    data = load_pyproject_toml(pyproject_path)
+    if get_editable_dependencies(data):
+        return True
+    else:
+        return False
+
+
 @click.command()
 def build_rewrite_path_deps():
-    """Creates a temporary environment with pinned dependency versions and builds the package."""
-    package_root = find_package_root()
+    pyproject_path = get_pyproject_path()
+    package_root = pyproject_path.parent
 
-    package_root_temp = create_temporary_build_env(package_root)
+    if hasEditableDependency(pyproject_path):
+        """Creates a temporary environment with pinned dependency versions and builds the package."""
 
-    click.echo("Building package...")
-    subprocess.run(["uv", "build"], cwd=package_root_temp, check=True)
+        package_root_temp = create_temporary_build_env(package_root)
 
-    shutil.copytree(
-        package_root_temp / "dist", package_root / "dist", dirs_exist_ok=True
-    )
+        subprocess.run(["uv", "build"], cwd=package_root_temp, check=True)
 
-    click.echo(f"Build completed in {package_root_temp}")
+        shutil.copytree(
+            package_root_temp / "dist", package_root / "dist", dirs_exist_ok=True
+        )
 
-    shutil.rmtree(package_root_temp)
-    click.echo("Temporary directory removed.")
+        shutil.rmtree(package_root_temp)
+
+    else:
+        subprocess.run(["uv", "build"], cwd=package_root, check=True)
 
 
 @click.group()
 def cli():
-    """CLI tool for managing monorepo builds."""
+    """CLI tool for managing monorepo builds in uv projects."""
     pass
 
 

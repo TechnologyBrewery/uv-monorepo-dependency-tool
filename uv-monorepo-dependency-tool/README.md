@@ -24,10 +24,10 @@ This helps package consumers avoid replicating complex folder structures within 
 
 ### Installation
 
-To use this tool in your environment, run
+To use this tool in your environment, from the root project directory run
 ```bash
 #TODO: update to published package
-uv tool install ../../uv-monorepo-dependency-tool/dist/uv_monorepo_dependency_tool-1.0.0.dev0-py3-none-any.whl 
+uv tool install uv-monorepo-dependency-tool/dist/uv_monorepo_dependency_tool-1.0.0.dev0-py3-none-any.whl 
 ```
 
 ### Usage
