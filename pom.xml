@@ -13,7 +13,7 @@
         A uv tool for facilitating the usage of more complex monorepo project structures by pinning version dependencies
         when building archives with local path dependencies to other uv projects within the same
         monorepo</description>
-    <groupId>org.technologybrewery</groupId>
+    <groupId>org.technologybrewery.uvmonorepo</groupId>
     <artifactId>uv-monorepo-dependency-tool-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
