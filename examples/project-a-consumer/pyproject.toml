@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "numpy>=2.2.4", # Added dependency to verify uv-monorepo-dependency tool works as expected
     "project-a",
 ]
 

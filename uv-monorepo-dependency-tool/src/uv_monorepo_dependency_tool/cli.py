@@ -1,4 +1,3 @@
-# %%
 import subprocess
 import tempfile
 import shutil
@@ -132,6 +131,53 @@ def build_rewrite_path_deps():
         subprocess.run(["uv", "build"], cwd=package_root, check=True)
 
 
+def load_requirements(filepath):
+    with open(filepath, 'r') as file:
+        return file.readlines()
+
+
+def remove_path_deps(filepath, data):
+    with open(filepath, 'w') as file:
+        for line in data:
+            if line.startswith("-e ../"):
+                file.write("")
+            else:
+                file.write(line)
+
+@click.command()
+@click.option(
+    '--output-file',
+    default="./dist/requirements.txt",
+    show_default=True,
+    help='Write the exported requirements to the given file',
+)
+def export_without_path_deps(output_file):
+    pyproject_path = get_pyproject_path()
+    package_root = pyproject_path.parent
+    subprocess.run(
+        [
+            "uv",
+            "export",
+            "--quiet",
+            # By default, uv includes the development dependency group in the exported requirements file.
+            # Disabling this feature as we don't need this capability in a containerization setting
+            "--no-dev",
+            # Exclude the comment header at the top of the generated output file
+            "--no-header",
+            # By default, uv includes the current project as an editable dependency in the exported requirements file with all of its dependencies.
+            # Disabling this feature as we don't need this capability in a containerization setting
+            "--no-emit-project",
+            "--output-file",
+            output_file,
+        ],
+        cwd=package_root,
+    )
+
+    if hasEditableDependency(pyproject_path):
+        requirements_data = load_requirements(output_file)
+        remove_path_deps(output_file, requirements_data)
+
+
 @click.group()
 def cli():
     """CLI tool for managing monorepo builds in uv projects."""
@@ -139,6 +185,7 @@ def cli():
 
 
 cli.add_command(build_rewrite_path_deps)
+cli.add_command(export_without_path_deps)
 
 if __name__ == "__main__":
     cli()
