@@ -63,10 +63,21 @@ When generating `wheel` or `sdist` archives for `project-a-consumer`  via `build
 To execute the tool from the command line, navigate to the desired package directory and run the following command:
 
 ```bash
-uv tool run uv-monorepo-dependency-tool build-rewrite-path-deps  
+uv tool run uv-monorepo-dependency-tool build-rewrite-path-deps --version-pinning-strategy=mixed     
 ```
 
 This will generate the updated archive with the rewritten dependencies.
+
+### Configuration
+
+The following cli options are supported :
+
+    * `--version-pinning-strategy` (`string`, default: `mixed`, options: `mixed`, `exact`): Strategy by which path
+      dependencies to other Poetry projects will be versioned in generated archives. Given a path dependency to a Poetry project
+      with version `1.2.3`, the version of the dependency referenced in the generated archive is `=1.2.3` for `exact`.  `mixed` mode switches versioning strategies based on whether the dependency
+      UV project version is an in-flight development version or a release - if a development version (i.e. `1.2.3.dev456`),
+      `mixed` can be used to specify the inclusion of subsequent dev releases (i.e. `>=1.2.3.dev`), and
+      if a release version (i.e. `1.2.3`), `exact` is applied (i.e. `=1.2.3`).
 
 ## Licence
 

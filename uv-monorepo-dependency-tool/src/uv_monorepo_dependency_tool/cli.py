@@ -6,6 +6,9 @@ from pathlib import Path
 import click
 import toml
 
+MIXED = "mixed"
+EXACT = "exact"
+
 
 def get_pyproject_path():
     current_working_directory = Path.cwd()
@@ -57,7 +60,7 @@ def remove_empty_editable_dependency_table(data, editable_dependencies_to_delete
         del data["tool"]["uv"]["sources"]
 
 
-def create_temporary_build_env(package_root):
+def create_temporary_build_env(package_root, version_pinning_strategy):
     """Creates a temporary directory for a clean build environment."""
     temp_dir = Path(tempfile.mkdtemp())
     click.echo(f"Creating temporary build environment at {temp_dir}")
@@ -88,10 +91,17 @@ def create_temporary_build_env(package_root):
                 if dep_pyproject.exists():
                     fixed_version = get_project_version(dep_pyproject)
                     dep_name_index = dependencies.index(dep_name)
-                    dependencies[dep_name_index] = f"{dep_name}=={fixed_version}"
-                    click.echo(
-                        f"Pinning {dep_name} version -> {dep_name}=={fixed_version}"
-                    )
+
+                    if version_pinning_strategy == EXACT:
+                        dependencies[dep_name_index] = f"{dep_name}=={fixed_version}"
+                        click.echo(
+                            f"Pinning {dep_name} version -> {dep_name}=={fixed_version}"
+                        )
+                    elif version_pinning_strategy == MIXED:
+                        dependencies[dep_name_index] = f"{dep_name}>={fixed_version}"
+                        click.echo(
+                            f"Pinning {dep_name} version -> {dep_name}>={fixed_version}"
+                        )
 
     if editable_dependencies_to_delete:
         remove_empty_editable_dependency_table(data, editable_dependencies_to_delete)
@@ -111,14 +121,24 @@ def hasEditableDependency(pyproject_path):
 
 
 @click.command()
-def build_rewrite_path_deps():
+@click.option(
+    '--version-pinning-strategy',
+    default='mixed',
+    show_default=True,
+    help='Strategy to use for version pinning.',
+)
+def build_rewrite_path_deps(version_pinning_strategy: str):
+    click.echo("version-pinning-strategy is {} ...".format(version_pinning_strategy))
+
     pyproject_path = get_pyproject_path()
     package_root = pyproject_path.parent
 
     if hasEditableDependency(pyproject_path):
         """Creates a temporary environment with pinned dependency versions and builds the package."""
 
-        package_root_temp = create_temporary_build_env(package_root)
+        package_root_temp = create_temporary_build_env(
+            package_root, version_pinning_strategy
+        )
 
         subprocess.run(["uv", "build"], cwd=package_root_temp, check=True)
 
