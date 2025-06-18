@@ -1,0 +1,44 @@
+name: Build uv-monorepo-dependency-tool
+
+on:
+    push:
+        branches: [ "dev" ]
+    pull_request_review:
+      types: [submitted]
+    workflow_dispatch:
+      inputs:
+        branch:
+          description: 'Branch to build'
+          required: true
+          default: 'dev'
+          type: string
+
+jobs:
+    build:
+        if: github.event.review.state == 'approved' || github.ref == 'refs/heads/dev' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref }}
+            - name: Install Python # use direct install rather than pyenv for CI for large speed improvement
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.12.9'
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                # Install a specific version of uv.
+                version: "0.6.10"
+
+            - name: Set up JDK 17
+              uses: actions/setup-java@v4
+              with:
+                  java-version: '17'
+                  distribution: 'temurin'
+                  cache: maven
+
+            - name: Build uv-monorepo-dependency-tool
+              run: mvn -B install --file pom.xml
