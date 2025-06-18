@@ -21,6 +21,12 @@
 
     <url>https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool</url>
     <inceptionYear>2025</inceptionYear>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/issues</url>
+    </issueManagement>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -40,8 +46,7 @@
 
     <scm>
         <connection>scm:git:ssh://git@github.com/TechnologyBrewery/uv-monorepo-dependency-tool.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/TechnologyBrewery/uv-monorepo-dependency-tool.git
-        </developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/TechnologyBrewery/uv-monorepo-dependency-tool.git</developerConnection>
         <url>https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/</url>
         <tag>HEAD</tag>
     </scm>
@@ -77,14 +82,5 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <profiles>
-        <profile>
-            <id>central-release</id>
-            <modules>
-                <module>uv-monorepo-dependency-tool</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>
