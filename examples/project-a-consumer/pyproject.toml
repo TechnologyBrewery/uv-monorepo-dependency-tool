@@ -1,6 +1,6 @@
 [project]
 name = "project-a-consumer"
-version = "1.0.0.dev"
+version = "1.0.1.dev"
 description = "A simple uv project that had an editable dependency on project-a"
 readme = "README.md"
 authors = [

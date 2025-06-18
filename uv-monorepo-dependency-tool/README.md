@@ -5,7 +5,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/uv-monorepo-dependency-tool?logo=python&logoColor=gold)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/uv-monorepo-dependency-tool?color=blue&label=Installs&logo=pypi&logoColor=gold)](https://pypi.org/project/uv-monorepo-dependency-tool/)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/mit)
-[![Build (github)](https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/actions/workflows/maven.yaml/badge.svg)](https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/actions/workflows/maven.yaml)
+[![Build uv-monorepo-dependency-tool](https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/actions/workflows/build.yaml/badge.svg)](https://github.com/TechnologyBrewery/uv-monorepo-dependency-tool/actions/workflows/build.yaml)
 
 ## Overview
 
