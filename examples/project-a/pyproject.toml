@@ -1,6 +1,6 @@
 [project]
 name = "project-a"
-version = "1.0.0.dev"
+version = "1.0.1.dev"
 description = "A simple uv project"
 readme = "README.md"
 authors = [
